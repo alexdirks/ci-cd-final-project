@@ -1,0 +1,39 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"  # Fixed indentation here
+
+      - name: Install dependencies
+        run: |  # Proper indentation for multi-line command
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install lint/test tools
+        run: |  # Proper indentation
+          pip install flake8 nose coverage
+
+      - name: Lint with flake8
+        run: |  # Proper indentation
+          flake8 service --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 service --count --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Run unit tests
+        run: |  # Proper indentation
+          nosetests -v --with-spec --spec-color --with-coverage --cover-package=app
